@@ -1,0 +1,105 @@
+
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: csi-node-scaleflashplugin
+  namespace: k8storage
+
+spec:
+  selector:
+    matchLabels:
+      app: csi-node-scaleflashplugin
+
+  template:
+    metadata:
+      labels:
+        app: csi-node-scaleflashplugin
+    spec:
+      serviceAccount: csi-service-account
+#      hostNetwork: true
+      containers:
+      - name: driver-registrar
+        image: quay.io/k8scsi/driver-registrar:v0.4.0
+        imagePullPolicy: IfNotPresent
+        args:
+        - --v=5
+        - --csi-address=/csi/csi.sock
+        - --kubelet-registration-path=/var/lib/kubelet/plugins/csi-scaleflash/csi.sock
+        env:
+        - name: KUBE_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /csi
+          name: socket-dir
+        - mountPath: /registration
+          name: registration-dir            
+
+      - name: scaleflash-driver
+        image: docker.k8storage.io:33330/scaleflash/k8storage:v3.3.1
+        imagePullPolicy: IfNotPresent
+        args:
+        - --v=5
+        - --endpoint=$(CSI_ENDPOINT)
+        - --nodeid=$(KUBE_NODE_NAME)
+        env:
+        - name: CSI_ENDPOINT
+          value: unix:///csi/csi.sock
+        - name: KUBE_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /dev
+          name: dev-dir
+        - mountPath: /csi
+          name: socket-dir
+        - mountPath: /var/lib/kubelet/pods
+          mountPropagation: Bidirectional
+          name: mountpoint-dir
+        - mountPath: /var/lib/origin/openshift.local.volumes/pods
+          mountPropagation: Bidirectional
+          name: openshift-mountpoint-dir
+        - mountPath: /jhmount
+          mountPropagation: Bidirectional
+          name: jhmount-dir
+        - mountPath: /opt/scaleflash/conf/.scaleflash.lic
+          name: scalelfash-conf
+          subPath: .scaleflash.lic
+
+      volumes:
+      - hostPath:
+          path: /dev
+          type: Directory
+        name: dev-dir
+      - hostPath:
+          path: /jhmount
+          type: DirectoryOrCreate
+        name: jhmount-dir
+      - hostPath:
+          path: /var/lib/kubelet/plugins/csi-scaleflash
+          type: DirectoryOrCreate
+        name: socket-dir
+      - hostPath:
+          path: /var/lib/kubelet/pods
+          type: DirectoryOrCreate
+        name: mountpoint-dir
+      - hostPath:
+          path: /var/lib/origin/openshift.local.volumes/pods
+          type: DirectoryOrCreate
+        name: openshift-mountpoint-dir
+      - hostPath:
+          path: /var/lib/kubelet/plugins
+          type: Directory
+        name: registration-dir
+      - name: scalelfash-conf
+        hostPath:
+          path: /opt/scaleflash/conf/
+

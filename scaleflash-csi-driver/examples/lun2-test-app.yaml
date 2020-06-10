@@ -1,0 +1,30 @@
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sf-csi-pod-demo-lun2
+  namespace: default
+spec:
+  replicas: 1
+  serviceName: ""
+  selector:
+    matchLabels:
+      app: sf-csi-pod-demo-lun2
+  template: 
+    metadata:
+      labels:
+        app: sf-csi-pod-demo-lun2
+    spec:
+      serviceAccount: csi-service-account
+      containers:
+      - name: centos-sf-csi-pod-demo-lun2
+        image: centos:7.6.1810
+        imagePullPolicy: IfNotPresent
+        command: [ "sleep", "99999" ]
+        volumeMounts:
+        - name: k8storage
+          mountPath: "/data"
+      volumes:
+      - name: k8storage
+        persistentVolumeClaim:
+          claimName: sf-csi-pvc-demo-lun2

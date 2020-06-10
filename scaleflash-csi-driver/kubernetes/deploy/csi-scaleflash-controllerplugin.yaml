@@ -1,0 +1,83 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: csi-attacher
+  namespace: k8storage
+  labels:
+    app: csi-attacher
+spec:
+  selector:
+    app: csi-attacher
+  ports:
+    - name: dummy
+      port: 12345
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+
+metadata:
+  name: csi-controller-scaleflashplugin
+  namespace: k8storage
+spec:
+#  serviceName: "csi-attacher"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csi-controller-scaleflashplugin
+  template:
+    metadata:
+      labels:
+        app: csi-controller-scaleflashplugin
+    spec:
+      serviceAccount: csi-service-account
+      containers:
+      - name: external-provisioner
+        args:
+        - --v=5
+        - --provisioner=csi-scaleflash
+        - --csi-address=/csi/csi.sock
+        image: quay.io/k8scsi/csi-provisioner:v0.4.0
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /csi
+          name: socket-dir
+      
+      - name: external-snapshotter
+        args:
+        - --v=5
+        - --snapshotter=csi-snapshotter
+        - --csi-address=/csi/csi.sock
+        image: quay.io/k8scsi/csi-snapshotter:v0.4.0
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /csi
+          name: socket-dir      
+
+      - name: external-attacher
+        args:
+        - --v=5
+        - --csi-address=$(ADDRESS)
+        env:
+        - name: ADDRESS
+          value: /csi/csi.sock
+        image: quay.io/k8scsi/csi-attacher:v0.4.0
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /csi
+          name: socket-dir
+
+      volumes:
+      - name: socket-dir
+        hostPath:
+          path: /var/lib/kubelet/plugins/csi-scaleflash
+          type: DirectoryOrCreate
+
