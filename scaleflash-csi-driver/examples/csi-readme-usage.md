@@ -113,8 +113,31 @@ spec:
 
 ## kubernetes 环境
 ```
-
-
+[root@node60 examples]# kubectl apply -f lun1-storageclass.yaml 
+storageclass.storage.k8s.io/sf-csi-sc-demo-lun1 created
+[root@node60 examples]# 
+[root@node60 examples]# kubectl apply -f lun1-pvc.yaml 
+persistentvolumeclaim/sf-csi-pvc-demo-lun1 created
+[root@node60 examples]# 
+[root@node60 examples]# kubectl get pvc
+NAME                   STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          AGE
+sf-csi-pvc-demo-lun1   Bound    pvc-61a4e3ca-8bfa-495d-bf35-31f3e8961f1c   100Gi      RWO            sf-csi-sc-demo-lun1   16h
+[root@node60 examples]# 
+[root@node60 examples]# kubectl apply -f lun1-test-app.yaml 
+statefulset.apps/sf-csi-pod-demo-lun1 created
+[root@node60 examples]#
+[root@node60 examples]# kubectl get pod
+NAME                     READY   STATUS    RESTARTS   AGE
+sf-csi-pod-demo-lun1-0   1/1     Running   0          16h
+[root@node60 examples]# 
+[root@node60 examples]# kubectl exec -it sf-csi-pod-demo-lun1-0 bash
+[root@sf-csi-pod-demo-lun1-0 /]# df -h /data
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/demo-lun1  100G   33M  100G   1% /data
+[root@sf-csi-pod-demo-lun1-0 /]# touch /data/test
+[root@sf-csi-pod-demo-lun1-0 /]# exit 
+exit
+[root@node60 examples]#
 ```
 
 
