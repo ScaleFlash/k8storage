@@ -19,7 +19,7 @@ spec:
 #      hostNetwork: true
       containers:
       - name: driver-registrar
-        image: quay.io/k8scsi/driver-registrar:v0.4.0
+        image: quay.io/k8scsi/csi-node-driver-registrar:v1.3.0
         imagePullPolicy: IfNotPresent
         args:
         - --v=5
@@ -37,12 +37,15 @@ spec:
         - mountPath: /csi
           name: socket-dir
         - mountPath: /registration
-          name: registration-dir            
+          name: registration-dir
+        - mountPath: /csi-data-dir
+          name: csi-data-dir         
 
       - name: scaleflash-driver
-        image: docker-bj.k8storage.io:33330/scaleflash/k8storage:v1.11-3.4-1
+        image: docker-bj.k8storage.io:33330/scaleflash/k8storage:v1.17-3.4-1
         imagePullPolicy: IfNotPresent
         args:
+        - --drivername=csi-scaleflash
         - --v=5
         - --endpoint=$(CSI_ENDPOINT)
         - --nodeid=$(KUBE_NODE_NAME)
@@ -61,9 +64,14 @@ spec:
           name: dev-dir
         - mountPath: /csi
           name: socket-dir
+        - mountPath: /csi-data-dir
+          name: csi-data-dir
         - mountPath: /var/lib/kubelet/pods
           mountPropagation: Bidirectional
           name: mountpoint-dir
+        - mountPath: /var/lib/kubelet/plugins
+          mountPropagation: Bidirectional
+          name: plugins-dir
         - mountPath: /var/lib/origin/openshift.local.volumes/pods
           mountPropagation: Bidirectional
           name: openshift-mountpoint-dir
@@ -73,6 +81,9 @@ spec:
         - mountPath: /opt/scaleflash/conf/.scaleflash.lic
           name: scalelfash-conf
           subPath: .scaleflash.lic
+        - mountPath: /usr/bin/storadm
+          name: storadm-exec
+          subPath: storadm
 
       volumes:
       - hostPath:
@@ -92,14 +103,25 @@ spec:
           type: DirectoryOrCreate
         name: mountpoint-dir
       - hostPath:
+          path: /var/lib/csi-scaleflash-data/
+          type: DirectoryOrCreate
+        name: csi-data-dir
+      - hostPath:
           path: /var/lib/origin/openshift.local.volumes/pods
           type: DirectoryOrCreate
         name: openshift-mountpoint-dir
       - hostPath:
-          path: /var/lib/kubelet/plugins
+          path: /var/lib/kubelet/plugins_registry
           type: Directory
         name: registration-dir
+      - hostPath:
+          path: /var/lib/kubelet/plugins
+          type: Directory
+        name: plugins-dir
       - name: scalelfash-conf
         hostPath:
           path: /opt/scaleflash/conf/
+      - name: storadm-exec
+        hostPath:
+          path: /opt/scaleflash/bin/
 

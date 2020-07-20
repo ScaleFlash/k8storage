@@ -39,7 +39,7 @@ spec:
         - --v=5
         - --provisioner=csi-scaleflash
         - --csi-address=/csi/csi.sock
-        image: quay.io/k8scsi/csi-provisioner:v0.4.0
+        image: quay.io/k8scsi/csi-provisioner:v2.0.0-rc2
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true
@@ -52,7 +52,7 @@ spec:
         - --v=5
         - --snapshotter=csi-snapshotter
         - --csi-address=/csi/csi.sock
-        image: quay.io/k8scsi/csi-snapshotter:v0.4.0
+        image: quay.io/k8scsi/csi-snapshotter:v2.1.0
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true
@@ -67,7 +67,7 @@ spec:
         env:
         - name: ADDRESS
           value: /csi/csi.sock
-        image: quay.io/k8scsi/csi-attacher:v0.4.0
+        image: quay.io/k8scsi/csi-attacher:v3.0.0-rc1
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true
