@@ -40,7 +40,7 @@ spec:
           name: registration-dir            
 
       - name: scaleflash-driver
-        image: docker.k8storage.io:33330/scaleflash/k8storage:v3.3.0.1055-0
+        image: docker-bj.k8storage.io:33330/scaleflash/k8storage:v1.11-3.4-1
         imagePullPolicy: IfNotPresent
         args:
         - --v=5

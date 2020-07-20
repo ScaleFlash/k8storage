@@ -11,10 +11,10 @@ QQ群 ： 1038246612
 os: centos 7.5  
 openshift 3.11  
 
-|Branch  | K8s version | openshift | CSI versions | AccessModes     | Status  |
-|--------|-------------|-----------|--------------|-----------------|---------|
-|v1.0.0  | 1.11 - 1.13 | 3.11      | v1.0 -       | ReadWriteOnce   | release |
-|master  | 1.11 - 1.13 | 3.11      | v1.0 -       | ReadWriteOnce   | release |
+|Branch  | K8s version | openshift | AccessModes   | Status  |
+|--------|-------------|-----------|---------------|---------|
+|v1.11.0 | 1.11 - 1.16 | 3.11      | ReadWriteOnce | release |
+|master  | 1.17 +      | 3.11      | ReadWriteOnce | release |
 
 # kubernetes
 ### Deploy

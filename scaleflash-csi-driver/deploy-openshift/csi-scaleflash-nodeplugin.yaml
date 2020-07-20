@@ -40,7 +40,7 @@ spec:
           name: registration-dir            
 
       - name: scaleflash-driver
-        image: docker.k8storage.io:33330/scaleflash/k8storage:v3.3.1
+        image: docker-bj.k8storage.io:33330/scaleflash/k8storage:v1.11-3.4-1
         imagePullPolicy: IfNotPresent
         args:
         - --v=5
@@ -73,6 +73,9 @@ spec:
         - mountPath: /opt/scaleflash/conf/.scaleflash.lic
           name: scalelfash-conf
           subPath: .scaleflash.lic
+        - mountPath: /usr/bin/storadm
+          name: storadm-exec
+          subPath: storadm
 
       volumes:
       - hostPath:
@@ -102,4 +105,6 @@ spec:
       - name: scalelfash-conf
         hostPath:
           path: /opt/scaleflash/conf/
-
+      - name: storadm-exec
+        hostPath:
+          path: /opt/scaleflash/bin/
