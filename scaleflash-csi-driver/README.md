@@ -26,7 +26,7 @@ openshift 3.11
 
 #### 自动部署脚本
 根据本地安装的存储软件版本 修改 csi-scaleflash-nodeplugin.yaml 中image 版本  
-"image": "docker.k8storage.io:33330/scaleflash/k8storage:v3.3.0.1055-0"  
+"image": "docker.k8storage.io:33330/scaleflash/k8storage:v1.11-3.4-1"  
 确保有集权管理权限，确定 k8storage namespace 没有使用  
 需要自定义安装请修改相应yaml档案，参照shell脚本手动部署  
 ```
@@ -68,7 +68,7 @@ csi-node-scaleflashplugin-rwb9p                    2/2     Running   0          
 
 #### 自动部署脚本
 根据本地安装的存储软件版本 修改 csi-scaleflash-nodeplugin.yaml 中image 版本  
-"image": "docker.k8storage.io:33330/scaleflash/k8storage:v3.3.0.1055-0"  
+"image": "docker.k8storage.io:33330/scaleflash/k8storage:v1.11-3.4-1"  
 确保当前oc用户有集权管理权限，确定 k8storage namespace 没有使用  
 需要自定义安装请修改相应yaml档案，参照shell脚本手动部署
 ```
