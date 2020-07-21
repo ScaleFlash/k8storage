@@ -50,7 +50,6 @@ spec:
       - name: external-snapshotter
         args:
         - --v=5
-        - --snapshotter=csi-snapshotter
         - --csi-address=/csi/csi.sock
         image: quay.io/k8scsi/csi-snapshotter:v2.1.0
         imagePullPolicy: IfNotPresent
