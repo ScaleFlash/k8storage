@@ -14,7 +14,7 @@ openshift 3.11
 |Branch  | K8s version | openshift | AccessModes   | Status  |
 |--------|-------------|-----------|---------------|---------|
 |v1.11.0 | 1.11 - 1.16 | 3.11      | ReadWriteOnce | release |
-|master  | 1.17 +      | 3.11      | ReadWriteOnce | release |
+|master  | 1.17 +      | 4.6       | ReadWriteOnce | release |
 
 # kubernetes
 ### Deploy
