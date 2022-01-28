@@ -3,7 +3,7 @@
 ## Overview
 This is a repository for scaleflash CSI Driver.
 
-官网 ： http://ch.scaleflash.com/  
+官网 ： http://www.scaleflash.com/  
 QQ群 ： 1038246612  
 
 ## compatibility
