@@ -1,7 +1,7 @@
 # scaleflash 
 
 ## Overview
-http://ch.scaleflash.com/  
+http://www.scaleflash.com/  
 软件定义智能存储  
 原生容器定义存储  
 高性能分布式存储  
